@@ -1,2 +1,2 @@
-# kg-paper-validation
-Tests to validate the Kremer, Grest, Carmesin paper
+# mxene project
+Analyzing how entropy-driven aggregation drives phase separation in mxene-polymer systems
