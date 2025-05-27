@@ -2,3 +2,4 @@
 *.gsd
 __pycache__/
 *.pyc
+*.txt
