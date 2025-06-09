@@ -47,7 +47,7 @@ class Graphene(System):
         periodicity=(True, True, False),
     ):
         surface = mb.Compound(periodicity=periodicity)
-        scale = 0.246 # 1.0 for testing, 0.246 for graphene bond lengths
+        scale = 1.0 # 1.0 for testing, 0.246 for graphene bond lengths
         spacings = [s * scale for s in [1.0, 1.0, 1.0]]
         points = [[0, 0, 0], [2/3, 1/3, 0]]
         lattice = Lattice(
@@ -75,21 +75,15 @@ class Graphene(System):
 
 
 #OK, so we want to initialize a system with some chains and some flakes
-kg_chain = LJChain(lengths=10,num_mols=500)
+kg_chain = LJChain(lengths=10,num_mols=250)
 sheet = Graphene(x_repeat=5, y_repeat=5, n_layers=1, periodicity=(False, False, False))
 system = Pack(molecules=[Molecule(compound=sheet.all_molecules[0], num_mols=25), kg_chain], density=0.2, packing_expand_factor = 5)
-
-
-# In[44]:
-
-
-system.visualize()
 
 
 # In[45]:
 
 
-s = 0.246 # 1.0 for scaling
+s = 1.0 # 1.0 for scaling
 
 
 # In[46]:
@@ -132,32 +126,12 @@ ff = BeadSpring(
 # In[49]:
 
 
-sim = Simulation(initial_state=system.hoomd_snapshot, forcefield=ff.hoomd_forces, device=cpu, dt = 0.00005, gsd_write_freq=int(5000), log_file_name = "ej_flakes.txt")
-sim.run_NVT(n_steps=5000, kT=0.001, tau_kt=1.0)
-sim.run_NVT(n_steps=5e8,kT=7, tau_kt = 0.1) #short for initial testing
+sim = Simulation(initial_state=system.hoomd_snapshot, forcefield=ff.hoomd_forces, device=cpu, dt = 0.000001, gsd_write_freq=int(5000), log_file_name = "ej_flakes.txt")
+#sim.run_NVT(n_steps=5000, kT=0.001, tau_kt=1.0)
+sim.run_NVT(n_steps=5e9,kT=7, tau_kt = 0.1) #short for initial testing
 sim.flush_writers()
 
 
-# In[50]:
-
-
-sim_visualizer = FresnelGSD(gsd_file="trajectory.gsd", frame=2, view_axis=(1, 1, 1))
-sim_visualizer.view()
-# dt of .0001 is as big as we can get with the current parameterization
-#Issues:
-# Graphene flakes are initialized way too small, or the bond lengths are wrong
-# Need to double-check all the bonds, angle, dihedral parameters
-# then need to go back and get some chain lengths and flake sizes right.
-
-
-# In[51]:
-
-
-sim_visualizer = FresnelGSD(gsd_file="trajectory.gsd", frame=56, view_axis=(1, 1, 1))
-sim_visualizer.view()
-
-
-# In[ ]:
 
 
 
