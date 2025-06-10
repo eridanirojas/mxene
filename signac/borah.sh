@@ -18,3 +18,4 @@
 #SBATCH --ntasks={{ np_global }}
 {% endblock %}
 {% endblock %}
+python ej_flakes.py
